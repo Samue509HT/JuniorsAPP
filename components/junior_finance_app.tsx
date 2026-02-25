@@ -10,6 +10,8 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function JuniorFinance() {
   const [transactions, setTransactions] = useState<
@@ -68,6 +70,33 @@ export default function JuniorFinance() {
     setTransactions((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const exportPdf = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Junior's Finance", 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Exporté le ${new Date().toLocaleDateString("fr-FR")}`, 14, 28);
+
+    doc.setFontSize(11);
+    doc.text(`Total Revenus : ${totalIncome.toFixed(2)} $`, 14, 38);
+    doc.text(`Total Dépenses : ${totalExpense.toFixed(2)} $`, 14, 44);
+    doc.text(`Épargne : ${balance.toFixed(2)} $`, 14, 50);
+
+    autoTable(doc, {
+      startY: 58,
+      head: [["Date", "Description", "Type", "Montant ($)"]],
+      body: transactions.map((t) => [
+        t.date,
+        t.description,
+        t.type === "income" ? "Revenu" : "Dépense",
+        (t.type === "income" ? "" : "-") + t.amount.toFixed(2),
+      ]),
+      styles: { fontSize: 9 },
+    });
+
+    doc.save(`junior-finance-${new Date().toISOString().slice(0, 10)}.pdf`);
+  };
+
   const totalIncome = transactions
     .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
@@ -92,7 +121,16 @@ export default function JuniorFinance() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Junior&apos;s Finance</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="text-2xl font-bold">Junior&apos;s Finance</h1>
+        <button
+          type="button"
+          onClick={exportPdf}
+          className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
+        >
+          Exporter en PDF
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="p-4 rounded-2xl bg-green-100 shadow">
