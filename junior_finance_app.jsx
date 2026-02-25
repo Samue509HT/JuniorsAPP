@@ -19,12 +19,20 @@ export default function JuniorFinance() {
     amount: "",
     type: "expense"
   });
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState<null | number>(null);
+
+  // Flag pour savoir si on est monté côté client
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("jf_transactions");
+    // On est sûr d'être dans le navigateur ici
+    setIsClient(true);
+
+    if (typeof window === "undefined") return;
+
+    const saved = window.localStorage.getItem("jf_transactions");
     if (saved) {
-      const parsed = JSON.parse(saved).map((t) => ({
+      const parsed = JSON.parse(saved).map((t: any) => ({
         ...t,
         id: Number(t.id),
         amount: Number(t.amount)
@@ -34,10 +42,13 @@ export default function JuniorFinance() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("jf_transactions", JSON.stringify(transactions));
-  }, [transactions]);
+    if (!isClient) return;
+    if (typeof window === "undefined") return;
 
-  const handleSubmit = (e) => {
+    window.localStorage.setItem("jf_transactions", JSON.stringify(transactions));
+  }, [transactions, isClient]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.description || !form.amount) return;
 
@@ -64,11 +75,11 @@ export default function JuniorFinance() {
     setForm({ date: "", description: "", amount: "", type: "expense" });
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     setTransactions((prev) => prev.filter((t) => t.id !== id));
   };
 
-  // Totals
+  // Totaux
   const totalIncome = transactions
     .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
@@ -79,11 +90,11 @@ export default function JuniorFinance() {
 
   const balance = totalIncome - totalExpense;
 
-  // Cumulative balance over time
+  // Solde cumulatif
   const balanceData = useMemo(() => {
     const sorted = [...transactions]
       .filter((t) => t.date)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
+      .sort((a, b) => new Date(a.date) as any - (new Date(b.date) as any));
 
     let runningBalance = 0;
 
@@ -103,7 +114,7 @@ export default function JuniorFinance() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Junior's Finance</h1>
+      <h1 className="text-2xl font-bold mb-6">Junior&apos;s Finance</h1>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -116,7 +127,7 @@ export default function JuniorFinance() {
           <p className="text-xl font-bold">{totalExpense.toFixed(2)} $</p>
         </div>
         <div className="p-4 rounded-2xl bg-blue-100 shadow">
-          <p className="text-sm">Ce qu'il te reste (Épargne)</p>
+          <p className="text-sm">Ce qu&apos;il te reste (Épargne)</p>
           <p className="text-xl font-bold">{balance.toFixed(2)} $</p>
         </div>
       </div>
@@ -191,7 +202,7 @@ export default function JuniorFinance() {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((t) => (
+          {transactions.map((t: any) => (
             <tr key={t.id} className="border-b">
               <td className="p-2">{t.date}</td>
               <td className="p-2">{t.description}</td>
@@ -206,7 +217,7 @@ export default function JuniorFinance() {
                     setForm({
                       date: t.date,
                       description: t.description,
-                      amount: t.amount,
+                      amount: String(t.amount),
                       type: t.type
                     });
                     setEditingId(t.id);
