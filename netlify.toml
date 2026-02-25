@@ -1,0 +1,4 @@
+# Netlify détecte Next.js automatiquement.
+# Ce fichier fixe la version de Node pour le build.
+[build.environment]
+  NODE_VERSION = "18"
