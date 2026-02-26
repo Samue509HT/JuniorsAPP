@@ -137,7 +137,7 @@ export default function JuniorFinance() {
         <button
           type="button"
           onClick={exportPdf}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+          className="min-h-[44px] px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 active:scale-[0.98] transition-all duration-200 touch-manipulation"
         >
           Exporter en PDF
         </button>
@@ -259,7 +259,7 @@ export default function JuniorFinance() {
           </div>
           <button
             type="submit"
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-200"
+            className="min-h-[44px] px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 active:scale-[0.98] transition-all duration-200 touch-manipulation"
           >
             {editingId !== null ? "Modifier" : "Ajouter"}
           </button>
@@ -315,14 +315,14 @@ export default function JuniorFinance() {
                             });
                             setEditingId(t.id);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition"
+                          className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 active:scale-[0.98] transition touch-manipulation"
                         >
                           Modifier
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDelete(t.id)}
-                          className="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 transition"
+                          className="min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 active:scale-[0.98] transition touch-manipulation"
                         >
                           Supprimer
                         </button>
