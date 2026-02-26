@@ -261,7 +261,6 @@ export default function JuniorFinance() {
                     fill: "#fff",
                     stroke: "#6366f1",
                     strokeWidth: 3,
-                    boxShadow: "0 0 0 4px rgba(99, 102, 241, 0.2)",
                   }}
                 />
               </AreaChart>
