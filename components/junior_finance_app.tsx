@@ -120,133 +120,221 @@ export default function JuniorFinance() {
   }, [transactions]);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Junior&apos;s Finance</h1>
+    <div className="p-4 sm:p-6 max-w-6xl mx-auto min-h-screen">
+      {/* Header */}
+      <header className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-lg font-bold shadow-lg shadow-indigo-500/30">
+            J
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">
+              Junior&apos;s Finance
+            </h1>
+            <p className="text-sm text-slate-500">Gère tes revenus et dépenses</p>
+          </div>
+        </div>
         <button
           type="button"
           onClick={exportPdf}
-          className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
         >
           Exporter en PDF
         </button>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="p-4 rounded-2xl bg-green-100 shadow">
-          <p className="text-sm">Total Revenus</p>
-          <p className="text-xl font-bold">{totalIncome.toFixed(2)} $</p>
+      {/* Summary cards */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-8">
+        <div className="relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-white/80 backdrop-blur border border-white/60 shadow-xl shadow-slate-200/50">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-400/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-1">
+            Total Revenus
+          </p>
+          <p className="text-2xl sm:text-3xl font-bold text-emerald-600">
+            {totalIncome.toFixed(2)} $
+          </p>
         </div>
-        <div className="p-4 rounded-2xl bg-red-100 shadow">
-          <p className="text-sm">Total Dépenses</p>
-          <p className="text-xl font-bold">{totalExpense.toFixed(2)} $</p>
+        <div className="relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-white/80 backdrop-blur border border-white/60 shadow-xl shadow-slate-200/50">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-rose-400/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-1">
+            Total Dépenses
+          </p>
+          <p className="text-2xl sm:text-3xl font-bold text-rose-600">
+            {totalExpense.toFixed(2)} $
+          </p>
         </div>
-        <div className="p-4 rounded-2xl bg-blue-100 shadow">
-          <p className="text-sm">Ce qu&apos;il te reste (Épargne)</p>
-          <p className="text-xl font-bold">{balance.toFixed(2)} $</p>
+        <div className="relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-white/80 backdrop-blur border border-white/60 shadow-xl shadow-slate-200/50">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-violet-400/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-1">
+            Épargne
+          </p>
+          <p className={`text-2xl sm:text-3xl font-bold ${balance >= 0 ? "text-violet-600" : "text-rose-600"}`}>
+            {balance.toFixed(2)} $
+          </p>
         </div>
-      </div>
+      </section>
 
-      <div className="bg-white p-4 rounded-2xl shadow mb-8">
-        <h2 className="text-lg font-semibold mb-4">Évolution de ton solde</h2>
-        <div className="w-full h-80">
+      {/* Chart */}
+      <section className="bg-white/80 backdrop-blur border border-white/60 rounded-2xl p-5 sm:p-6 shadow-xl shadow-slate-200/50 mb-8">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          Évolution de ton solde
+        </h2>
+        <div className="w-full h-72 sm:h-80 rounded-xl bg-slate-50/50 p-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={balanceData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="date" stroke="#64748b" fontSize={12} />
+              <YAxis stroke="#64748b" fontSize={12} />
+              <Tooltip
+                contentStyle={{
+                  borderRadius: "12px",
+                  border: "none",
+                  boxShadow: "0 10px 40px -10px rgba(0,0,0,0.15)",
+                }}
+              />
               <Line
                 type="monotone"
                 dataKey="balance"
-                stroke="#2563eb"
+                stroke="url(#lineGradient)"
                 strokeWidth={3}
+                dot={{ fill: "#6366f1", strokeWidth: 0 }}
+                activeDot={{ r: 6, fill: "#6366f1", stroke: "#fff", strokeWidth: 2 }}
               />
+              <defs>
+                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#6366f1" />
+                  <stop offset="100%" stopColor="#8b5cf6" />
+                </linearGradient>
+              </defs>
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </section>
 
-      <form onSubmit={handleSubmit} className="grid gap-3 mb-6">
-        <input
-          type="date"
-          value={form.date}
-          onChange={(e) => setForm({ ...form, date: e.target.value })}
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="border p-2 rounded"
-        />
-        <input
-          type="number"
-          placeholder="Montant"
-          value={form.amount}
-          onChange={(e) => setForm({ ...form, amount: e.target.value })}
-          className="border p-2 rounded"
-        />
-        <select
-          value={form.type}
-          onChange={(e) => setForm({ ...form, type: e.target.value })}
-          className="border p-2 rounded"
-        >
-          <option value="expense">Dépense</option>
-          <option value="income">Revenu</option>
-        </select>
-        <button type="submit" className="bg-black text-white p-2 rounded-xl">
-          {editingId !== null ? "Modifier" : "Ajouter"}
-        </button>
-      </form>
+      {/* Form */}
+      <section className="bg-white/80 backdrop-blur border border-white/60 rounded-2xl p-5 sm:p-6 shadow-xl shadow-slate-200/50 mb-8">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          Ajouter une transaction
+        </h2>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1.5">Date</label>
+            <input
+              type="date"
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              className="w-full border border-slate-200 p-2.5 rounded-lg bg-white text-slate-800"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1.5">Description</label>
+            <input
+              type="text"
+              placeholder="Ex. Courses, Salaire…"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              className="w-full border border-slate-200 p-2.5 rounded-lg bg-white text-slate-800 placeholder:text-slate-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1.5">Montant</label>
+            <input
+              type="number"
+              placeholder="0.00"
+              value={form.amount}
+              onChange={(e) => setForm({ ...form, amount: e.target.value })}
+              className="w-full border border-slate-200 p-2.5 rounded-lg bg-white text-slate-800 placeholder:text-slate-400"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-1.5">Type</label>
+            <select
+              value={form.type}
+              onChange={(e) => setForm({ ...form, type: e.target.value })}
+              className="w-full border border-slate-200 p-2.5 rounded-lg bg-white text-slate-800"
+            >
+              <option value="expense">Dépense</option>
+              <option value="income">Revenu</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-200"
+          >
+            {editingId !== null ? "Modifier" : "Ajouter"}
+          </button>
+        </form>
+      </section>
 
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b">
-            <th className="text-left p-2">Date</th>
-            <th className="text-left p-2">Description</th>
-            <th className="text-left p-2">Montant</th>
-            <th className="text-left p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((t) => (
-            <tr key={t.id} className="border-b">
-              <td className="p-2">{t.date}</td>
-              <td className="p-2">{t.description}</td>
-              <td className="p-2">
-                {t.type === "income" ? "+" : "-"}
-                {t.amount.toFixed(2)} $
-              </td>
-              <td className="p-2 space-x-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setForm({
-                      date: t.date,
-                      description: t.description,
-                      amount: String(t.amount),
-                      type: t.type,
-                    });
-                    setEditingId(t.id);
-                  }}
-                  className="px-3 py-1 bg-blue-500 text-white rounded"
-                >
-                  Modifier
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(t.id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded"
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Table */}
+      <section className="bg-white/80 backdrop-blur border border-white/60 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/50">
+        <div className="px-5 py-4 border-b border-slate-200/80">
+          <h2 className="text-lg font-semibold text-slate-800">Historique des transactions</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-slate-50/80 text-slate-600 text-sm font-semibold">
+                <th className="text-left p-4">Date</th>
+                <th className="text-left p-4">Description</th>
+                <th className="text-left p-4">Montant</th>
+                <th className="text-left p-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-slate-500">
+                    Aucune transaction. Ajoute-en une avec le formulaire ci-dessus.
+                  </td>
+                </tr>
+              ) : (
+                transactions.map((t, i) => (
+                  <tr
+                    key={t.id}
+                    className={`border-t border-slate-100 hover:bg-slate-50/50 transition-colors ${
+                      i % 2 === 0 ? "bg-white/50" : "bg-slate-50/30"
+                    }`}
+                  >
+                    <td className="p-4 text-slate-700">{t.date}</td>
+                    <td className="p-4 text-slate-700 font-medium">{t.description}</td>
+                    <td className={`p-4 font-semibold ${t.type === "income" ? "text-emerald-600" : "text-rose-600"}`}>
+                      {t.type === "income" ? "+" : "−"}
+                      {t.amount.toFixed(2)} $
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setForm({
+                              date: t.date,
+                              description: t.description,
+                              amount: String(t.amount),
+                              type: t.type,
+                            });
+                            setEditingId(t.id);
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 font-medium hover:bg-indigo-200 transition"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(t.id)}
+                          className="px-3 py-1.5 rounded-lg bg-rose-100 text-rose-700 font-medium hover:bg-rose-200 transition"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }
